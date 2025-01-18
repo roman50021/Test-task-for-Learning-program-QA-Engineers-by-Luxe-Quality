@@ -2,39 +2,31 @@ import { $ } from '@wdio/globals'
 import Page from './page.js';
 
 /**
- * sub page containing specific selectors and methods for a specific page
+ * Клас для сторінки логіна
  */
 class LoginPage extends Page {
-    /**
-     * define selectors using getter methods
-     */
-    get inputUsername () {
-        return $('#username');
+    // Селектори для елементів сторінки
+    get inputUsername() {
+        return $('#user-name');
     }
 
-    get inputPassword () {
+    get inputPassword() {
         return $('#password');
     }
 
-    get btnSubmit () {
-        return $('button[type="submit"]');
+    get btnSubmit() {
+        return $('#login-button');
     }
 
     /**
-     * a method to encapsule automation code to interact with the page
-     * e.g. to login using username and password
+     * Метод для логіна
+     * @param {string} username Ім'я користувача
+     * @param {string} password Пароль
      */
-    async login (username, password) {
+    async login(username, password) {
         await this.inputUsername.setValue(username);
         await this.inputPassword.setValue(password);
         await this.btnSubmit.click();
-    }
-
-    /**
-     * overwrite specific options to adapt it to page object
-     */
-    open () {
-        return super.open('login');
     }
 }
 
