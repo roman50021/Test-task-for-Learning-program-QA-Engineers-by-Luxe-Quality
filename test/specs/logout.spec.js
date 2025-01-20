@@ -2,8 +2,9 @@ import { expect } from '@wdio/globals';
 import LoginPage from '../pageobjects/login.page.js';
 import InventoryPage from '../pageobjects/inventory.page.js';
 
+// Test Case 0004
 describe('Logout tests for SauceDemo', () => {
-    // Test Case 0004
+
     it('should logout the user successfully', async () => {
         // Передумова: Логін
         await LoginPage.open();
@@ -24,6 +25,12 @@ describe('Logout tests for SauceDemo', () => {
         // Перевірка URL
         const loginPageUrl = await browser.getUrl();
         expect(loginPageUrl).toBe('https://www.saucedemo.com/'); // Змінити залежно від реального URL
+
+        // Перевірка, що поля "username" та "password" порожні
+        const usernameValue = await LoginPage.inputUsername.getValue();
+        const passwordValue = await LoginPage.inputPassword.getValue();
+        expect(usernameValue).toBe('');
+        expect(passwordValue).toBe('');
 
         // Перевірка кнопки "Login"
         const isLoginButtonVisible = await LoginPage.btnSubmit.isDisplayed();
