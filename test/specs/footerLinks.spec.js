@@ -1,6 +1,7 @@
 import loginPage from '../pageobjects/login.page.js';
+import inventoryPage from '../pageobjects/inventory.page.js';
 
-// Test Case 0007
+//Test Case 0007
 describe('Footer links tests for SauceDemo', () => {
     let originalHandle;
 
@@ -11,33 +12,28 @@ describe('Footer links tests for SauceDemo', () => {
         const currentUrl = await browser.getUrl();
         expect(currentUrl).toContain('inventory.html');
 
-        // ОТУТ зберігаємо хендл оригінальної вкладки:
+        // Запам'ятовуємо хендл
         originalHandle = await browser.getWindowHandle();
     });
 
     afterEach(async () => {
-        // На випадок, якщо ми залишилися в новій вкладці, повернемося на оригінальну
+        // Закриваємо зайві вкладки
         const allHandles = await browser.getWindowHandles();
         for (const h of allHandles) {
             if (h !== originalHandle) {
-                // Закриваємо зайву вкладку
                 await browser.switchToWindow(h);
                 await browser.closeWindow();
             }
         }
-        // Повертаємося на вихідну вкладку (щоб інші тести не «застрягли»)
         await browser.switchToWindow(originalHandle);
     });
 
     it('should open Twitter link in a new tab', async () => {
-        // Клік по Twitter (class="social_twitter" → туди вкладене <a/>)
-        const twitterLink = await $('.social_twitter a');
-        await twitterLink.click();
+        await inventoryPage.openTwitter(); // замість $('.social_twitter a').click()
 
         const allHandles = await browser.getWindowHandles();
         expect(allHandles.length).toBeGreaterThan(1);
 
-        // Шукаємо handle, який не дорівнює оригінальному
         let newHandle;
         for (const h of allHandles) {
             if (h !== originalHandle) {
@@ -45,20 +41,15 @@ describe('Footer links tests for SauceDemo', () => {
                 break;
             }
         }
-        // Перемикаємося:
         await browser.switchToWindow(newHandle);
 
-        // Перевіряємо URL
         const newUrl = await browser.getUrl();
         expect(newUrl).toMatch(/(twitter\.com|x\.com)/);
     });
 
     it('should open Facebook link in a new tab', async () => {
-        // Повертаємося на вихідну вкладку (раптом лишилися в попередньому тесті?)
         await browser.switchToWindow(originalHandle);
-
-        const facebookLink = await $('.social_facebook a');
-        await facebookLink.click();
+        await inventoryPage.openFacebook();
 
         const allHandles = await browser.getWindowHandles();
         expect(allHandles.length).toBeGreaterThan(1);
@@ -78,9 +69,7 @@ describe('Footer links tests for SauceDemo', () => {
 
     it('should open LinkedIn link in a new tab', async () => {
         await browser.switchToWindow(originalHandle);
-
-        const linkedInLink = await $('.social_linkedin a');
-        await linkedInLink.click();
+        await inventoryPage.openLinkedIn();
 
         const allHandles = await browser.getWindowHandles();
         expect(allHandles.length).toBeGreaterThan(1);

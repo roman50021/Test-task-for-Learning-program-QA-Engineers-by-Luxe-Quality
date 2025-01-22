@@ -1,6 +1,9 @@
-import loginPage  from '../pageobjects/login.page.js';
+import loginPage from '../pageobjects/login.page.js';
+import inventoryPage from '../pageobjects/inventory.page.js';
+import cartPage from '../pageobjects/cart.page.js';
+import checkoutPage from '../pageobjects/checkout.page.js';
 
-// Test Case 0008
+//Test Case 0008
 describe('Valid Checkout flow', () => {
     before(async () => {
         await loginPage.open();
@@ -12,50 +15,43 @@ describe('Valid Checkout flow', () => {
 
     it('should successfully checkout an item', async () => {
         // 1) Додаємо товар у кошик
-        await $('#add-to-cart-sauce-labs-backpack').click();
+        await inventoryPage.addBackpackToCart();
 
         // Перевірка, що значок кошика = "1"
-        const cartBadgeText = await $('.shopping_cart_badge').getText();
-        expect(cartBadgeText).toContain('1');
+        expect(await inventoryPage.getCartBadgeText()).toContain('1');
 
         // 2) Переходимо в кошик
-        await $('#shopping_cart_container').click();
-        // Перевіряємо URL
+        await cartPage.openCart();
         let currentUrl = await browser.getUrl();
         expect(currentUrl).toContain('/cart.html');
 
         // 3) "Checkout"
-        await $('#checkout').click();
+        await cartPage.clickCheckout();
 
         // 4) Заповнюємо поля
-        await $('#first-name').setValue('Roman');
-        await $('#last-name').setValue('Fedko');
-        await $('#postal-code').setValue('12434');
+        await checkoutPage.fillInformation('Roman', 'Fedko', '12434');
 
         // 5) Кнопка "Continue"
-        await $('#continue').click();
-
-        // Перевірка URL
+        await checkoutPage.clickContinue();
         currentUrl = await browser.getUrl();
         expect(currentUrl).toContain('/checkout-step-two.html');
 
         // 6) Завершуємо покупки
-        await $('#finish').click();
+        await checkoutPage.clickFinish();
         currentUrl = await browser.getUrl();
         expect(currentUrl).toContain('/checkout-complete.html');
 
         // Перевірка фінального тексту
-        const headerText = await $('.complete-header').getText();
+        const headerText = await checkoutPage.getCompleteHeaderText();
         expect(headerText).toContain('Thank you for your order!');
 
         // 7) "Back Home"
-        await $('#back-to-products').click();
-
-        // Перевірка, що знову на inventory і кошик порожній
+        await checkoutPage.clickBackHome();
         currentUrl = await browser.getUrl();
         expect(currentUrl).toContain('/inventory.html');
 
-        const cartBadgeAfter = await $('.shopping_cart_badge').isExisting();
-        expect(cartBadgeAfter).toBe(false);
+        // Перевірка, що тепер кошик порожній
+        const badgeExists = await inventoryPage.cartBadge.isExisting();
+        expect(badgeExists).toBe(false);
     });
 });

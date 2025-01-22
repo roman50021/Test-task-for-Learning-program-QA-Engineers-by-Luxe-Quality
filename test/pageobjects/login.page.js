@@ -1,26 +1,34 @@
 import Page from './page.js';
 
-/**
- * Клас для сторінки логіна
- */
+
 class LoginPage extends Page {
-    // Селектори для елементів сторінки
-    get inputUsername() {
+
+    // Локатори:
+    get inputUsername()  {
         return $('#user-name');
     }
-
-    get inputPassword() {
+    get inputPassword()  {
         return $('#password');
     }
-
-    get btnSubmit() {
+    get btnSubmit()      {
         return $('#login-button');
+    }
+    get usernameErrorIcon() {
+        return $('.error_icon');
+    }
+    get errorMessageContainer() {
+        return $('.error-message-container');
     }
 
     /**
-     * Метод для логіна
-     * @param {string} username Ім'я користувача
-     * @param {string} password Пароль
+     * Відкрити сторінку логіна (головну saucedemo)
+     */
+    async open() {
+        await super.open('');
+    }
+
+    /**
+     * Логін із вказаними юзер/пароль
      */
     async login(username, password) {
         await this.inputUsername.setValue(username);
@@ -28,15 +36,26 @@ class LoginPage extends Page {
         await this.btnSubmit.click();
     }
 
+    /**
+     * Клік по кнопці «Login» без введення полів
+     */
     async submitEmpty() {
-        // Просто клік по кнопці без setValue
         await this.btnSubmit.click();
     }
 
-    async getErrorMessage() {
-        return $('.error-message-container').getText();
+    /**
+     * Отримати, чи відображається іконка помилки біля username
+     */
+    async isUsernameErrorIconDisplayed() {
+        return this.usernameErrorIcon.isDisplayed();
     }
 
+    /**
+     * Текст помилки з контейнера
+     */
+    async getErrorMessage() {
+        return this.errorMessageContainer.getText();
+    }
 }
 
 export default new LoginPage();

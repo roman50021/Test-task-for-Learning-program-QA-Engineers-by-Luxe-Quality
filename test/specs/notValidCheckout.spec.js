@@ -1,6 +1,7 @@
 import loginPage from '../pageobjects/login.page.js';
+import cartPage from '../pageobjects/cart.page.js';
 
-// Test Case 0009 with bug
+//Test Case 0009
 describe('Checkout without products (error on cart)', () => {
 
     before(async () => {
@@ -15,33 +16,26 @@ describe('Checkout without products (error on cart)', () => {
         let url = await browser.getUrl();
         expect(url).toContain('/inventory.html');
 
-        await $('#shopping_cart_container').click();
+        // Відкрити кошик
+        await cartPage.openCart();
         url = await browser.getUrl();
         expect(url).toContain('/cart.html');
 
-        const cartItems = await $$('.cart_item');
-        expect(cartItems.length).toBe(0);
+        const count = await cartPage.getCartItemsCount();
+        expect(count).toBe(0);
 
-        await $('#checkout').click();
+        // Натискаємо checkout
+        await cartPage.clickCheckout();
 
-        // ---- Ось головне: перевірка помилки ----
-
-        // Переконуємось, що залишилися на cart.html (або якщо має відкриватися інша сторінка,
-        // але з помилкою — коригуємо під фактичну поведінку)
+        // Переконуємось, що лишилися на cart.html (з помилкою)
         url = await browser.getUrl();
         expect(url).toContain('/cart.html');
 
-        // Шукаємо блок з повідомленням про помилку
-        // Якщо у вашій верстці поки немає реального елемента —
-        // додайте тестовий селектор (наприклад .cart_error). Нехай поки що тест “падає”,
-        // доки розробники не реалізують це повідомлення.
-        const errorMsg = await $('.cart_error');
-
-        // Перевіряємо, що елемент існує і відображає потрібний текст
-        const isErrorExisting = await errorMsg.isExisting();
+        // Перевірка блоку з помилкою
+        const isErrorExisting = await cartPage.isCartErrorExisting();
         expect(isErrorExisting).toBe(true);
 
-        const text = await errorMsg.getText();
+        const text = await cartPage.getCartErrorText();
         expect(text).toContain('Cart is empty');
     });
 });

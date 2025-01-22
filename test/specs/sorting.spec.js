@@ -1,9 +1,8 @@
 import loginPage from '../pageobjects/login.page.js';
-import inventoryPage  from '../pageobjects/inventory.page.js';
+import inventoryPage from '../pageobjects/inventory.page.js';
 
-// Test Case 0006
+//Test Case 0006
 describe('Sorting tests for SauceDemo', () => {
-
     before(async () => {
         await loginPage.open();
         await loginPage.login('standard_user', 'secret_sauce');
@@ -22,8 +21,8 @@ describe('Sorting tests for SauceDemo', () => {
     it('should sort products by "Name (Z to A)"', async () => {
         await inventoryPage.sortBy('Name (Z to A)');
         const itemNames = await inventoryPage.getAllItemNames();
-        const sortedNamesDesc = [...itemNames].sort().reverse();
-        expect(itemNames).toEqual(sortedNamesDesc);
+        const sortedDesc = [...itemNames].sort().reverse();
+        expect(itemNames).toEqual(sortedDesc);
     });
 
     it('should sort products by "Price (low to high)"', async () => {
