@@ -1,11 +1,10 @@
-import { expect } from '@wdio/globals';
-import LoginPage from '../pageobjects/login.page.js';
+import loginPage  from '../pageobjects/login.page.js';
 
 // Test Case 0008
 describe('Valid Checkout flow', () => {
     before(async () => {
-        await LoginPage.open();
-        await LoginPage.login('standard_user', 'secret_sauce');
+        await loginPage.open();
+        await loginPage.login('standard_user', 'secret_sauce');
 
         const currentUrl = await browser.getUrl();
         expect(currentUrl).toContain('/inventory.html');

@@ -1,4 +1,3 @@
-import { $ } from '@wdio/globals'
 import Page from './page.js';
 
 /**
@@ -28,6 +27,16 @@ class LoginPage extends Page {
         await this.inputPassword.setValue(password);
         await this.btnSubmit.click();
     }
+
+    async submitEmpty() {
+        // Просто клік по кнопці без setValue
+        await this.btnSubmit.click();
+    }
+
+    async getErrorMessage() {
+        return $('.error-message-container').getText();
+    }
+
 }
 
 export default new LoginPage();

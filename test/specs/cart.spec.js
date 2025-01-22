@@ -1,14 +1,13 @@
-import { expect } from '@wdio/globals';
-import LoginPage from '../pageobjects/login.page.js';
-import InventoryPage from '../pageobjects/inventory.page.js';
+import loginPage  from '../pageobjects/login.page.js';
+import inventoryPage from '../pageobjects/inventory.page.js';
 
 // Test Case 0005
 describe('Cart tests for SauceDemo', () => {
     it('should keep items in cart after logout and login', async () => {
 
-        await LoginPage.open();
+        await loginPage .open();
 
-        await LoginPage.login('standard_user', 'secret_sauce');
+        await loginPage .login('standard_user', 'secret_sauce');
 
         let currentUrl = await browser.getUrl();
         expect(currentUrl).toContain('inventory.html');
@@ -21,20 +20,20 @@ describe('Cart tests for SauceDemo', () => {
         const cartBadge = await $('.shopping_cart_badge');
         expect(await cartBadge.getText()).toBe('1');
 
-        await InventoryPage.openMenu();
+        await inventoryPage.openMenu();
         const menuItems = await $$('.bm-item');
         expect(menuItems.length).toBe(4);
 
-        await InventoryPage.logout();
+        await inventoryPage.logout();
         currentUrl = await browser.getUrl();
         expect(currentUrl).toBe('https://www.saucedemo.com/');
 
-        const usernameValue = await LoginPage.inputUsername.getValue();
-        const passwordValue = await LoginPage.inputPassword.getValue();
+        const usernameValue = await loginPage.inputUsername.getValue();
+        const passwordValue = await loginPage.inputPassword.getValue();
         expect(usernameValue).toBe('');
         expect(passwordValue).toBe('');
 
-        await LoginPage.login('standard_user', 'secret_sauce');
+        await loginPage.login('standard_user', 'secret_sauce');
         currentUrl = await browser.getUrl();
         expect(currentUrl).toContain('inventory.html');
 
